@@ -1,0 +1,49 @@
+function pre($data){
+
+    echo '<pre>';
+    print_r($data);
+    echo '</pre>';
+
+}
+
+$connect = mysqli_connect('localhost','root','','iwilltill_mwell');
+
+$sql = "SELECT * FROM pages";
+$result = mysqli_query($connect,$sql);
+$data = [];
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()){
+        $data[] = $row;
+    }
+}
+
+
+/* function buildTree($elements,$parentId = 0) {
+    $branch = array();
+    foreach ($elements as $element) {
+        if ($element['parent_id']  == $parentId) {
+            $children = buildTree($elements, $element['id']);
+            if ($children) {
+                $element['children'] = $children;
+            }
+            $branch[] = $element;
+        }
+    }
+    return $branch;
+} */
+
+function arrayTree($array,$parentId = 0){
+    $buildArray = [];
+    foreach($array as $value){
+        if( $value['parent_id'] == $parentId ){
+            $children = arrayTree($array,$value['id']);
+            if( $children ){
+                $value['child'] = $children;
+            }
+            $buildArray[] = $value;
+        }
+    }
+    return $buildArray;
+}
+
+pre(arrayTree($data));
